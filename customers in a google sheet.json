@@ -1,0 +1,277 @@
+{
+  "name": "customers in a google sheet",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1iLWgq6CU7wCijtekSViAWvYMPCOgCAQq-KR6WcO2DUs",
+          "mode": "list",
+          "cachedResultName": "customer products and  destination",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iLWgq6CU7wCijtekSViAWvYMPCOgCAQq-KR6WcO2DUs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customer destination",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iLWgq6CU7wCijtekSViAWvYMPCOgCAQq-KR6WcO2DUs/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -432,
+        -144
+      ],
+      "id": "ddfec469-c9b0-46d8-b397-548952259db4",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pKobIJUDkF7JtIVe",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        -48
+      ],
+      "id": "9f4ce01a-3f3b-41a2-92e4-e1bbaeec831d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1iLWgq6CU7wCijtekSViAWvYMPCOgCAQq-KR6WcO2DUs",
+          "mode": "list",
+          "cachedResultName": "customer products and  destination",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iLWgq6CU7wCijtekSViAWvYMPCOgCAQq-KR6WcO2DUs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1609285356,
+          "mode": "list",
+          "cachedResultName": "customer products",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iLWgq6CU7wCijtekSViAWvYMPCOgCAQq-KR6WcO2DUs/edit#gid=1609285356"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -432,
+        96
+      ],
+      "id": "b4800f4d-2f8b-4609-82c9-b8acad0a1bda",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pKobIJUDkF7JtIVe",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -32,
+        -80
+      ],
+      "id": "91f0ab3b-ab81-4387-8543-a2e14d8436f0",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d2d36933-5606-47a5-83be-e54582e1ae2a",
+              "name": "PRODUCTS",
+              "value": "={{ $json.PRODUCTS }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -160,
+        112
+      ],
+      "id": "754dfa07-aef6-40f7-9c96-89dd4d92774d",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an assistant responsible for creating professional email notifications.\n\nA new customer has been added to the Google Sheet.\n\nCustomer Details:\n- Name: {{ $json.NAME }}\n- Location: {{ $json.LOCATION }}\n- Product: {{ $json.PRODUCTS }}\n\nYour task is to write a professional email informing the recipient that a new customer has been added.\n\nRequirements:\n- Use a clear subject line.\n- Greet the recipient.\n- State that a new customer has been added to the Google Sheet.\n- Include the customer's Name, Location, and Product in a clean format.\n- End with a polite closing.\n- Return ONLY the email in the following format:\n\nSubject: New Customer Added\n\nHello,\n\nA new customer has been added to the Google Sheet.\n\nCustomer Details:\n• Name: ...\n• Location: ...\n• Product: ...\n\nPlease review the information and take any necessary action.\n\nKind regards,\nAI Customer Notification System",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        160,
+        -80
+      ],
+      "id": "068f2a98-e4b6-4f78-a23a-41c9ebf2a1b1",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3.8-27b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        160,
+        128
+      ],
+      "id": "8a346094-0de6-451b-b257-d77c98006c8c",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "T5aCB8xBnNnexers",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "maxwellgichanga952@gmail.com",
+        "subject": "customer updates",
+        "emailType": "text",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        528,
+        -80
+      ],
+      "id": "62021a5e-de11-4230-bffd-04dae80bb907",
+      "name": "Send a message",
+      "webhookId": "5b4cbed9-3b36-4427-94c9-1d53b55c2279",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "79ENDpl5WfAltgtU",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "49874b5c-39ab-413b-805d-309918e5d35c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c4850ac758d84be8809887a19c7c912d56616321b8c93b65cc5c1122c1ffedf6"
+  },
+  "nodeGroups": [],
+  "id": "sViHjwICqzMfgvHF",
+  "tags": []
+}
