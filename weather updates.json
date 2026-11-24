@@ -1,0 +1,204 @@
+{
+  "name": "weather updates",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -848,
+        -32
+      ],
+      "id": "baefc9f9-7b08-4cd5-9837-a8cd25ff0cc0",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://open-meteo.com/en/docs?utm_source=chatgpt.com",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "weather",
+              "value": "https://api.open-meteo.com/v1/forecast?latitude=-1.2833&longitude=36.8167&daily=sunrise,sunset&hourly=temperature_2m,rain&current=temperature_2m,rain&timezone=auto&past_days=1&utm_source=chatgpt.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -624,
+        -32
+      ],
+      "id": "8d5e2c5f-1b64-4c9d-ace0-220dc1ec1df6",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI weather monitoring assistant.\n\nYou will receive weather data from an HTTP Request node using the Open-Meteo API for Nairobi, Kenya.\n\nAnalyze the weather information carefully and create a daily weather report.\n\nYour tasks:\n\nTASK 1: Analyze the weather situation\n\nReview:\n- Current temperature\n- Current rainfall\n- Hourly temperature changes\n- Hourly rain forecast\n- Sunrise time\n- Sunset time\n- Weather conditions from the available data\n\nExplain:\n- What the weather situation is currently.\n- Whether rain is expected.\n- How the weather may change during the day.\n- Any advice for people in Nairobi (clothing, travel, carrying an umbrella, outdoor activities).\n\nTASK 2: Write a professional email\n\nCreate an email with this format:\n\nSubject:\nDaily Weather Update - Nairobi Kenya\n\nEmail Body:\n\nHello,\n\nHere is today's weather update for Nairobi, Kenya.\n\nCurrent Weather:\n(Explain current temperature and rainfall)\n\nToday's Forecast:\n(Explain expected temperature changes and rain possibility)\n\nSun Information:\n(Mention sunrise and sunset times)\n\nWeather Advice:\n(Give useful recommendations based on the weather)\n\nHave a great day.\n\nTASK 3: Prepare Google Sheets data\n\nAfter creating the email, return the information in a structured JSON format that can be inserted into Google Sheets.\n\nUse this format:\n\n{\n\"date\": \"\",\n\"location\": \"Nairobi, Kenya\",\n\"current_temperature\": \"\",\n\"current_rain\": \"\",\n\"temperature_forecast\": \"\",\n\"rain_forecast\": \"\",\n\"sunrise\": \"\",\n\"sunset\": \"\",\n\"weather_situation\": \"\",\n\"recommendation\": \"\",\n\"email_subject\": \"\",\n\"email_body\": \"\"\n}\n\nRules:\n- Use only information from the HTTP Request weather data.\n- Do not invent weather information.\n- Keep the Google Sheets fields clean.\n- Make the email professional and easy to understand.\n- The JSON output must be valid for the Google Sheets Append Row node.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -400,
+        -16
+      ],
+      "id": "b9eba363-2eac-4e05-b4a8-42442667997f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "documentId": {
+          "__rl": true,
+          "value": "1R5wpEDoCnrTzQfOpbEssC8MKBdcNzkYs5noPQDXfBGE",
+          "mode": "list",
+          "cachedResultName": "nairobi weather",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1R5wpEDoCnrTzQfOpbEssC8MKBdcNzkYs5noPQDXfBGE/edit?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -256,
+        176
+      ],
+      "id": "1f4923c7-5aa5-4735-a271-417ea3d33bfa",
+      "name": "Create sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pKobIJUDkF7JtIVe",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "maxwellgichanga952@gmail.com",
+        "subject": "hello",
+        "emailType": "text",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -32,
+        -32
+      ],
+      "id": "a59fd832-20c9-4f8a-9879-d1702ae8b655",
+      "name": "Send a message",
+      "webhookId": "2e625151-7c22-4c19-b72a-c38d476c8065",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "79ENDpl5WfAltgtU",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        192
+      ],
+      "id": "676912d7-df3e-4cfc-9293-848360bd3c37",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "T5aCB8xBnNnexers",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "332cbf78-5d0e-4c7b-a58a-e29f4b2a56c8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c4850ac758d84be8809887a19c7c912d56616321b8c93b65cc5c1122c1ffedf6"
+  },
+  "nodeGroups": [],
+  "id": "Pw2lDAUM83pb4qof",
+  "tags": []
+}
