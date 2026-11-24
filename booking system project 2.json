@@ -1,0 +1,308 @@
+{
+  "name": "booking system project 2",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -592,
+        0
+      ],
+      "id": "a0253412-e719-40ab-a0ce-b0bca0532cd5",
+      "name": "When chat message received",
+      "webhookId": "7269581b-ff41-43d2-b78f-da6736929159"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -112,
+        240
+      ],
+      "id": "ff5f8d33-bd5e-4af0-8613-dfd8a2d236c3",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "sendTo": "maxwellgichanga952@gmail.com",
+        "subject": "details",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "84c14cf9-0a68-4b4a-a520-ffb45ccfec93",
+      "name": "Send a message",
+      "webhookId": "3eeaa539-56f0-4bb4-9ecf-bacb23d875e6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "79ENDpl5WfAltgtU",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1GkSkjHu7wLkV8qMgdZCalUlYLrTNUH38foDLx42uhvA",
+          "mode": "list",
+          "cachedResultName": "customer data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GkSkjHu7wLkV8qMgdZCalUlYLrTNUH38foDLx42uhvA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GkSkjHu7wLkV8qMgdZCalUlYLrTNUH38foDLx42uhvA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "NAME": "={{ $('Get row(s) in sheet').item.json.NAME }}",
+            "PRODUCT": "={{ $('Get row(s) in sheet').item.json.PRODUCT }}",
+            "MONEY PAID": "={{ $('Get row(s) in sheet').item.json[\"MONEY PAID\"] }}",
+            "DESTINATION": "={{ $('Get row(s) in sheet').item.json.DESTINATION }}",
+            "row_number": "={{ $('Get row(s) in sheet').item.json.row_number }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "NAME",
+              "displayName": "NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PRODUCT",
+              "displayName": "PRODUCT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "MONEY PAID",
+              "displayName": "MONEY PAID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "DESTINATION",
+              "displayName": "DESTINATION",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        48,
+        256
+      ],
+      "id": "e0ef4372-2c65-4d00-861a-d70ad229ba57",
+      "name": "Update row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pKobIJUDkF7JtIVe",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        208
+      ],
+      "id": "0fe843c2-cf1b-42e3-bf35-64fdf2ecd2e0",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "V3skkySSky7OmLbv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1GkSkjHu7wLkV8qMgdZCalUlYLrTNUH38foDLx42uhvA",
+          "mode": "list",
+          "cachedResultName": "customer data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GkSkjHu7wLkV8qMgdZCalUlYLrTNUH38foDLx42uhvA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GkSkjHu7wLkV8qMgdZCalUlYLrTNUH38foDLx42uhvA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -368,
+        0
+      ],
+      "id": "a2ccb4fd-cf64-4928-9e3c-bb37461a5715",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pKobIJUDkF7JtIVe",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "={{ $('Get row(s) in sheet').item.json.row_number }}",
+        "text": "",
+        "options": {
+          "systemMessage": "={{ $('Get row(s) in sheet').item.json.row_number }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -112,
+        0
+      ],
+      "id": "ab666956-738e-4f2d-8d0a-ec514e7199ef",
+      "name": "AI Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "1797619e-301d-4213-a30d-66d4dd28f24d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c4850ac758d84be8809887a19c7c912d56616321b8c93b65cc5c1122c1ffedf6"
+  },
+  "nodeGroups": [],
+  "id": "ZKAXytUp7m6FCwXO",
+  "tags": []
+}
